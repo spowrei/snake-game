@@ -4,7 +4,7 @@
 #include <cstdlib>   // rand()
 using std::cout;
 
-const int wide = 10;
+const int width = 10;
 const int height = 10;
 
 bool gameOver;
@@ -12,7 +12,8 @@ int headX, headY;
 int tailLenght;
 int tailX[100], tailY[100];
 int appleX, appleY;
-int waitFor = 100;
+int waitFor = 300;
+int score;
 
 enum Directions
 {
@@ -24,23 +25,114 @@ enum Directions
 };
 enum Directions direction;
 
+void AppleCreator();
+
 void Setup()
 {
     gameOver = 0;
     direction = STOP;
     tailLenght = 0;
-    headX = rand() % wide;
+    headX = rand() % width;
     headY = rand() % height;
-    appleX = rand() % wide;
+    appleX = rand() % width;
     appleY = rand() % height;
+    score = 0;
 }
 
 void Input()
 {
+    if (_kbhit())
+    {
+        char tus;
+        tus = _getch();
+
+        switch (tus)
+        {
+        case 'w':
+            if (direction != DOWN)
+            {
+                direction = UP;
+            }
+            break;
+        case 's':
+            if (direction != UP)
+            {
+                direction = DOWN;
+            }
+            break;
+        case 'a':
+            if (direction != RIGHT)
+            {
+                direction = LEFT;
+            }
+            break;
+        case 'd':
+            if (direction != LEFT)
+            {
+                direction = RIGHT;
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 void Logic()
 {
+    if (tailLenght > 1)
+    {
+        tailX[0] = headX;
+        tailY[0] = headY;
+    }
+    if (tailLenght > 2)
+    {
+        for (int tx = tailLenght - 1; tx > 0; tx--)
+        {
+            tailX[tx] = tailX[tx - 1];
+        }
+
+        for (int ty = tailLenght - 1; ty > 0; ty--)
+        {
+            tailY[ty] = tailY[ty - 1];
+        }
+    }
+
+    switch (direction)
+    {
+    case UP:
+        headY--;
+        break;
+
+    case DOWN:
+        headY++;
+        break;
+
+    case RIGHT:
+        headX++;
+        break;
+
+    case LEFT:
+        headX--;
+        break;
+
+    default:
+        break;
+    }
+
+    if (headX < 0 || headY < 0 || headX >= width || headY >= height)
+    {
+        gameOver = 1;
+        return;
+    }
+
+    else if (headX == appleX && headY == appleY)
+    {
+        score += 10;
+        AppleCreator();
+        tailLenght++;
+    }
 }
 
 void Draw()
@@ -48,7 +140,7 @@ void Draw()
     system("CLS");
 
     // ust duvar
-    for (int i = 0; i < wide + 2; i++)
+    for (int i = 0; i < width + 2; i++)
     {
         cout << "# ";
     }
@@ -58,7 +150,7 @@ void Draw()
     for (int y = 0; y < height; y++)
     {
         cout << "# "; // sol duvar
-        for (int x = 0; x < wide; x++)
+        for (int x = 0; x < width; x++)
         {
 
             if (headX == x && headY == y)
@@ -78,7 +170,7 @@ void Draw()
                 {
                     for (int ty = 0; ty < tailLenght; ty++)
                     {
-                        if (tx == x && ty == y)
+                        if (tailX[tx] == x && tailY[ty] == y)
                         {
                             cout << "o ";
                             bos = 0;
@@ -96,10 +188,16 @@ void Draw()
     }
 
     // alt duvar
-    for (int i = 0; i < wide + 2; i++)
+    for (int i = 0; i < width + 2; i++)
     {
         cout << "# ";
     }
+}
+
+void AppleCreator()
+{
+    appleX = rand() % width;
+    appleY = rand() % height;
 }
 
 int main()
@@ -114,6 +212,8 @@ int main()
 
         Sleep(waitFor);
     }
+
+    cout << "\nGame Over!\nYour Score: " << score;
 
     return 0;
 }
