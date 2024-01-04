@@ -81,23 +81,19 @@ void Input()
 
 void Logic()
 {
-    if (tailLenght > 1)
-    {
-        tailX[0] = headX;
-        tailY[0] = headY;
-    }
-    if (tailLenght > 2)
-    {
-        for (int tx = tailLenght - 1; tx > 0; tx--)
-        {
-            tailX[tx] = tailX[tx - 1];
-        }
 
-        for (int ty = tailLenght - 1; ty > 0; ty--)
-        {
-            tailY[ty] = tailY[ty - 1];
-        }
+    for (int p = tailLenght - 1; p > 0; p--)
+    {
+        tailX[p]=tailX[p-1];
+        tailY[p]=tailY[p-1];
     }
+    /*
+    *tail n = tail n-1
+    tail0 = bas
+    */
+
+    tailX[0] = headX;
+    tailY[0] = headY;
 
     switch (direction)
     {
@@ -166,15 +162,12 @@ void Draw()
             else
             {
                 bool bos = 1;
-                for (int tx = 0; tx < tailLenght; tx++)
+                for (int tt = 0; tt < tailLenght; tt++)
                 {
-                    for (int ty = 0; ty < tailLenght; ty++)
+                    if (tailX[tt] == x && tailY[tt] == y)
                     {
-                        if (tailX[tx] == x && tailY[ty] == y)
-                        {
-                            cout << "o ";
-                            bos = 0;
-                        }
+                        cout << "o ";
+                        bos = 0;
                     }
                 }
 
