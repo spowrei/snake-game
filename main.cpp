@@ -4,8 +4,8 @@
 #include <cstdlib>   // rand()
 using std::cout;
 
-const int width = 10;
-const int height = 10;
+const int width = 8;
+const int height = 8;
 
 bool gameOver;
 int headX, headY;
@@ -26,6 +26,7 @@ enum Directions
 enum Directions direction;
 
 void AppleCreator();
+void Draw();
 
 void Setup()
 {
@@ -37,6 +38,7 @@ void Setup()
     appleX = rand() % width;
     appleY = rand() % height;
     score = 0;
+    void Draw();
 }
 
 void Input()
@@ -84,8 +86,8 @@ void Logic()
 
     for (int p = tailLenght - 1; p > 0; p--)
     {
-        tailX[p]=tailX[p-1];
-        tailY[p]=tailY[p-1];
+        tailX[p] = tailX[p - 1];
+        tailY[p] = tailY[p - 1];
     }
     /*
     *tail n = tail n-1
@@ -123,7 +125,16 @@ void Logic()
         return;
     }
 
-    else if (headX == appleX && headY == appleY)
+    for (int f = 0; f < tailLenght; f++)
+    {
+        if (headX == tailX[f] && headY == tailY[f])
+        {
+            gameOver = 1;
+            return;
+        }
+    }
+
+    if (headX == appleX && headY == appleY)
     {
         score += 10;
         AppleCreator();
@@ -185,6 +196,7 @@ void Draw()
     {
         cout << "# ";
     }
+    cout<< "\n"<<score;
 }
 
 void AppleCreator()
